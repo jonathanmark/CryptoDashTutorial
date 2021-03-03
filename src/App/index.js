@@ -2,6 +2,7 @@ import './App.css';
 import Welcome from "./WelcomeMessage";
 import styled, {css} from 'styled-components'
 import AppLayout from "./AppLayout";
+import AppBar from "./AppBar";
 
 
 const MyButton = styled.div`
@@ -14,6 +15,7 @@ const MyButton = styled.div`
 function App() {
   return (
     <AppLayout>
+      <AppBar/>
       <Welcome/>
       <MyButton>Hello</MyButton>
       <MyButton primary>Hello</MyButton>
