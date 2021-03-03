@@ -1,5 +1,6 @@
 import React from "react";
 import styled, {css} from "styled-components";
+import { AppContext } from "./AppProvider";
 
 const Logo = styled.div`
     font-size: 1.5em;
@@ -21,11 +22,18 @@ const toProperCase = (lower) => {
     return lower.charAt(0).toUpperCase() + lower.substr(1)
 }
 
-const ControlButton = ({name, active}) => {
+const ControlButton = ({name}) => {
     return (
-        <ControlButtonElement active = {active}>
-            {toProperCase(name)}
-        </ControlButtonElement>
+        <AppContext.Consumer>
+            {({page, setPage}) => (
+                <ControlButtonElement 
+                    active={page === name}
+                    onClick={() => {}}
+                >
+                    {toProperCase(name)}
+                </ControlButtonElement>)
+            }
+        </AppContext.Consumer>
     )
 }
 
@@ -36,7 +44,7 @@ export default function(){
             <Logo> Cryptodash </Logo>
             <div></div>
             <ControlButton active name="dashboard"/>
-            <ControlButton  name="settings"/>
+            <ControlButton name="settings"/>
         </Bar>
     )
 }
