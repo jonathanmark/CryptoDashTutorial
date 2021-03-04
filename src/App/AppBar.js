@@ -28,7 +28,9 @@ const ControlButton = ({name}) => {
             {({page, setPage}) => (
                 <ControlButtonElement 
                     active={page === name}
-                    onClick={() => {}}
+                    onClick={() => {
+                        setPage(name) 
+                    }}
                 >
                     {toProperCase(name)}
                 </ControlButtonElement>)
@@ -43,7 +45,7 @@ export default function(){
         <Bar>
             <Logo> Cryptodash </Logo>
             <div></div>
-            <ControlButton active name="dashboard"/>
+            <ControlButton name="dashboard" active />
             <ControlButton name="settings"/>
         </Bar>
     )

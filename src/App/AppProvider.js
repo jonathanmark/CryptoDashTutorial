@@ -8,7 +8,7 @@ export class AppProvider extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            page: 'dashboard',
+            page: 'settings',
             ...this.savedSettings(),
             setPage: this.setPage,
             confirmFavorites: this.confirmFavorites
@@ -30,7 +30,7 @@ export class AppProvider extends React.Component {
             page:'dashboard'
         });
         localStorage.setItem('cryptoDash', JSON.stringify({
-            test: 'hello'
+            
         }));
     }
 
