@@ -19,13 +19,14 @@ export class AppProvider extends React.Component {
             addCoin: this.addCoin,
             isInFavorites: this.isInFavorites,
             removeCoin: this.removeCoin,
-            setFilteredCoins : this.setFilteredCoins
+            setFilteredCoins : this.setFilteredCoins, 
+            setCurrentFavorite: this.setCurrentFavorite
         }
     }
 
     isInFavorites = key => _.includes(this.state.favorites, key)
 
-    addCoin = (key) => {
+    addCoin = key => {
         let favorites = [...this.state.favorites];
 
         if(favorites.length < MAX_FAVORITES){
@@ -34,7 +35,7 @@ export class AppProvider extends React.Component {
         }
     }
 
-    removeCoin = (key) => {
+    removeCoin = key => {
         let favorites = [...this.state.favorites];
         this.setState({favorites:_.pull(favorites, key)})
     }
@@ -52,6 +53,7 @@ export class AppProvider extends React.Component {
     fetchPrices = async () => {
         if(this.state.firstVisit) return
         let prices = await this.prices();
+        // prices = prices.filter(price => Object.keys(price).length);
         this.setState({prices})
     }
 
@@ -69,17 +71,32 @@ export class AppProvider extends React.Component {
         return returnData
     }
 
-    setFilteredCoins = (filteredCoins) => this.setState({filteredCoins})
+    setFilteredCoins = filteredCoins => {this.setState({filteredCoins}); console.log(filteredCoins)};
+
+    setCurrentFavorite = (sym) => {
+        this.setState({
+            currentFavorite: sym
+        });
+        localStorage.setItem('cryptoDash', JSON.stringify({
+            ...JSON.parse(localStorage.getItem('cryptoDash')),
+            currentFavorite: sym
+        }));
+    }
 
     confirmFavorites = () =>{
+
+        let currentFavorite = this.state.favorites[0];
+ 
         this.setState({
             firstVisit:false,
-            page:'dashboard'
+            page:'dashboard',
+            currentFavorite,
         }, () => {
             this.fetchPrices();
         });
         localStorage.setItem('cryptoDash', JSON.stringify({
-            favorites: this.state.favorites
+            favorites: this.state.favorites,
+            currentFavorite
         }));
     }
 
@@ -88,8 +105,8 @@ export class AppProvider extends React.Component {
         if(!cryptoDashData){
             return {page: 'settings', firstVisit: true}
         }
-        let {favorites} = cryptoDashData;
-        return {favorites};
+        let {favorites, currentFavorite} = cryptoDashData;
+        return {favorites, currentFavorite};
     }
 
     setPage = page => this.setState({page})
