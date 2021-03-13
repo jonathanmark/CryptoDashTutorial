@@ -18,7 +18,8 @@ export class AppProvider extends React.Component {
             confirmFavorites: this.confirmFavorites,
             addCoin: this.addCoin,
             isInFavorites: this.isInFavorites,
-            removeCoin: this.removeCoin
+            removeCoin: this.removeCoin,
+            setFilteredCoins : this.setFilteredCoins
         }
     }
 
@@ -40,6 +41,7 @@ export class AppProvider extends React.Component {
 
     componentDidMount = () => {
         this.fetchCoins();
+        this.fetchPrices();
     }
 
     fetchCoins = async () => {
@@ -47,10 +49,34 @@ export class AppProvider extends React.Component {
         this.setState({coinList});
     }
 
+    fetchPrices = async () => {
+        if(this.state.firstVisit) return
+        let prices = await this.prices();
+        this.setState({prices})
+    }
+
+    prices = async() => {
+        let returnData = [];
+        for (let i=0; i < this.state.favorites.length; i++){
+            try {
+                let priceData = await cc.priceFull(this.state.favorites[i], 'USD');
+                returnData.push(priceData)
+            }catch (e) {
+                console.warn('fetch price err')
+            }
+        }
+
+        return returnData
+    }
+
+    setFilteredCoins = (filteredCoins) => this.setState({filteredCoins})
+
     confirmFavorites = () =>{
         this.setState({
             firstVisit:false,
             page:'dashboard'
+        }, () => {
+            this.fetchPrices();
         });
         localStorage.setItem('cryptoDash', JSON.stringify({
             favorites: this.state.favorites
@@ -63,7 +89,7 @@ export class AppProvider extends React.Component {
             return {page: 'settings', firstVisit: true}
         }
         let {favorites} = cryptoDashData;
-        return favorites;
+        return {favorites};
     }
 
     setPage = page => this.setState({page})
